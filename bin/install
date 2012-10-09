@@ -1,0 +1,17 @@
+#!/bin/bash
+
+opencart_home=$1
+
+if [ -z "$opencart_home" ]; then
+  echo "Usage: $0 OPENCART_HOME"
+  exit 1
+fi
+
+cd upload
+find . -type f | while read file
+do
+  cwd=`pwd`
+  curfile=$(echo $file | sed "s,^\.,$cwd,")
+  newfile=$(echo $file | sed "s,^\.,$opencart_home,")
+  ln -sf $curfile $newfile
+done
