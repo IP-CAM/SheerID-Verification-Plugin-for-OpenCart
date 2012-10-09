@@ -1,7 +1,11 @@
 <?php
 class ModelToolSheerID extends Model {
 	public function getAffiliationTypes() {
-		return array("STUDENT_FULL_TIME", "STUDENT_PART_TIME");
+		try {
+			return $this->getService()->listAffiliationTypes();
+		} catch (Exception $e) {
+			return array();
+		}
 	}
 	
 	public function getOffers() {
@@ -25,6 +29,22 @@ class ModelToolSheerID extends Model {
 			}
 		}
 		return null;
+	}
+	
+	public function getService() {	
+		$accessToken = $this->config->get('sheer_id_access_token');
+		$baseUrl = $this->config->get('sheer_id_base_url');
+		$this->loadSheerIDLibrary();
+		return new SheerID($accessToken, $baseUrl);
+	}
+
+	public function verify() {
+		$SheerID = $this->getService();
+		return json_decode("{\"result\":true}");
+	}
+	
+	private function loadSheerIDLibrary() {
+		require_once(DIR_SYSTEM . 'sheerid/library/SheerID.php');
 	}
 }
 ?>

@@ -28,15 +28,29 @@ class ControllerTotalSheerID extends Controller {
 			$this->redirect($this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 		
+		$this->load->model('tool/sheer_id');
+		$affiliationTypes = $this->model_tool_sheer_id->getAffiliationTypes();
+		
+		foreach ($affiliationTypes as $a) {
+			try {
+				$this->data["label_$a"] = $this->language->get("label_$a");
+			} catch (Exception $e) {
+				$this->data["label_$a"] = $a;
+			}
+		}
+		
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
 		$this->data['text_enabled'] = $this->language->get('text_enabled');
 		$this->data['text_disabled'] = $this->language->get('text_disabled');
 		$this->data['text_none'] = $this->language->get('text_none');
+		$this->data['text_mode_production'] = $this->language->get('text_mode_production');
+		$this->data['text_mode_sandbox'] = $this->language->get('text_mode_sandbox');
 		
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_sort_order'] = $this->language->get('entry_sort_order');
 		$this->data['entry_access_token'] = $this->language->get('entry_access_token');
+		$this->data['entry_mode'] = $this->language->get('entry_mode');
 		$this->data['entry_coupons'] = $this->language->get('entry_coupons');
 					
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -89,6 +103,12 @@ class ControllerTotalSheerID extends Controller {
 		} else {
 			$this->data['sheer_id_access_token'] = $this->config->get('sheer_id_access_token');
 		}
+
+		if (isset($this->request->post['sheer_id_base_url'])) {
+			$this->data['sheer_id_base_url'] = $this->request->post['sheer_id_base_url'];
+		} else {
+			$this->data['sheer_id_base_url'] = $this->config->get('sheer_id_base_url');
+		}
 		
 		$this->load->model('sale/coupon');
 		
@@ -101,8 +121,7 @@ class ControllerTotalSheerID extends Controller {
 		
 		$this->data['coupons'] = $this->model_sale_coupon->getCoupons($query);
 		
-		$this->load->model('tool/sheer_id');
-		$this->data['affiliation_types'] = $this->model_tool_sheer_id->getAffiliationTypes();
+		$this->data['affiliation_types'] = $affiliationTypes;
 		
 		$maps = array();
 		$settings = $this->model_setting_setting->getSetting('sheer_id');

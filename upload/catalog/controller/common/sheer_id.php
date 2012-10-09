@@ -1,9 +1,12 @@
 <?php  
 class ControllerCommonSheerID extends Controller {
 	public function index() {
-		
-		if (isset($this->request->post['verified'])) {
-			$verified = $this->request->post['verified'];
+		if (isset($this->request->post['coupon_id'])) {
+			
+			$this->load->model('tool/sheer_id');
+			$response = $this->model_tool_sheer_id->verify();
+			
+			$verified = $response->result;
 			if ($verified) {
 				$aff_types = array("STUDENT_FULL_TIME");
 				$requestId = "fafa0";

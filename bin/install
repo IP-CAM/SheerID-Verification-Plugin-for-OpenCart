@@ -8,7 +8,7 @@ if [ -z "$opencart_home" ]; then
 fi
 
 cd upload
-find . -type f | while read file
+find . -type f | grep -v .git | while read file
 do
   cwd=`pwd`
   curfile=$(echo $file | sed "s,^\.,$cwd,")

@@ -7,6 +7,23 @@
 */
 ?>
 <?php echo $header; ?>
+
+<style type="text/css">
+label.checkbox {
+	margin-left: 1em;
+	white-space: nowrap;
+	width: 200px;
+	display: block;
+	float: left;
+}
+.offers-table {
+	width: 100%;
+}
+.offers-table td {
+	vertical-align: top;
+}
+</style>
+
 <div id="content">
   <div class="breadcrumb">
     <?php foreach ($breadcrumbs as $breadcrumb) { ?>
@@ -44,13 +61,20 @@
             <td><?php echo $entry_access_token; ?></td>
             <td><input type="text" name="sheer_id_access_token" value="<?php echo $sheer_id_access_token; ?>" size="40" /></td>
           </tr>
+	      <tr>
+            <td><?php echo $entry_mode; ?></td>
+            <td><select name="sheer_id_base_url">
+                <option value="https://services.sheerid.com" <?php echo $sheer_id_base_url == 'https://services.sheerid.com' ? "selected" : ""; ?>><?php echo $text_mode_production; ?></option>
+                <option value="https://services-sandbox.sheerid.com" <?php echo $sheer_id_base_url == 'https://services-sandbox.sheerid.com' ? "selected" : ""; ?>><?php echo $text_mode_sandbox; ?></option>
+              </select></td>
+          </tr>
 		  <tr>
 			<td><?php echo $entry_coupons; ?></td>
 			<td>
-				<table>
+				<table class="offers-table">
 					<tr>
-						<th>Coupon</th>
-						<th>Affiliation Type(s)</th>
+						<th style="width: 20%">Coupon</th>
+						<th style="width: 80%">Verification Required?</th>
 					</tr>
 					<?php foreach ($coupons as $coupon) {
 						$coupon_id = $coupon['coupon_id'];
@@ -59,12 +83,14 @@
 					<tr>
 						<td><?php printf("%s (Code: %s)", $coupon["name"], $coupon["code"]) ?></td>
 						<td>
+							<label style="font-weight: bold;"><input type="checkbox" class="qualified" <?php if (count($types)) echo "checked" ?>> Require verification</label>
+							<div class="checkboxes">
 							<?php foreach ($affiliation_types as $affiliation_type) {
 								$checked = false !== array_search($affiliation_type, $types);
 							?>
-							<label><input type="checkbox" name="affiliation_types-<?php echo $coupon["coupon_id"]; ?>[]" value="<?php echo $affiliation_type ?>" <?php echo $checked ? "checked" : "" ?> /> <?php echo $affiliation_type; ?></label>
-								<?php } ?>
-							</select>
+								<label class="checkbox"><input type="checkbox" name="affiliation_types-<?php echo $coupon["coupon_id"]; ?>[]" value="<?php echo $affiliation_type ?>" <?php echo $checked ? "checked" : "" ?> /> <?php echo ${"label_$affiliation_type"}; ?></label>
+							<?php } ?>
+							</div>
 						</td>
 					</tr>
 					<?php } ?>
@@ -76,4 +102,18 @@
     </div>
   </div>
 </div>
+
+<script>
+jQuery(function($){
+	$(':checkbox.qualified').change(function(){
+		var on = $(this).is(':checked');
+		var cboxWrap = $(this).closest('td').find('.checkboxes');
+		cboxWrap[on ? 'show' : 'hide']();
+		if (!on) {
+			cboxWrap.find(':checkbox').removeAttr('checked');
+		}
+	}).change();
+});
+</script>
+
 <?php echo $footer; ?>
