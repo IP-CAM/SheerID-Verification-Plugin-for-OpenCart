@@ -59,7 +59,27 @@ label.checkbox {
           </tr>
 	      <tr>
             <td><?php echo $entry_access_token; ?></td>
-            <td><input type="text" name="sheer_id_access_token" value="<?php echo $sheer_id_access_token; ?>" size="40" /></td>
+            <td>
+				<?php if ($sheer_id_access_token) { ?>
+					<span class="token-display">
+						<?php echo substr($sheer_id_access_token, 0, 4) . str_repeat("*", strlen($sheer_id_access_token) - 4); ?>
+						<a class="link-token-edit" href="javascript:">Edit</a>
+					</span>
+					<span style="display: none;" class="token-edit">
+				<?php } ?>
+				<input type="text" name="sheer_id_access_token" value="<?php echo $sheer_id_access_token; ?>" size="40" />
+				<?php if ($sheer_id_access_token) { ?>
+					</span>
+					<script>
+					jQuery(function($){
+						$('.link-token-edit').click(function(){
+							$('.token-edit').show();
+							$('.token-display').hide();
+						});
+					});
+					</script>
+				<?php } ?>
+			</td>
           </tr>
 	      <tr>
             <td><?php echo $entry_mode; ?></td>
