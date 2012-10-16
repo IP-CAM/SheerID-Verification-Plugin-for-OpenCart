@@ -1,4 +1,6 @@
 <?php
+$_['label_organization_university'] = "School";
+$_['label_organization_military'] = "Branch/Component";
 $_['field_EMAIL']				= 'Email Address';
 $_['field_FIRST_NAME']			= 'First Name';
 $_['field_MIDDLE_NAME']			= 'Middle Name';

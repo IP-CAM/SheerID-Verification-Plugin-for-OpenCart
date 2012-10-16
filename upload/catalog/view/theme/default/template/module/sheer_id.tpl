@@ -1,10 +1,5 @@
 <?php
 if ($config) {
-	if (isset($this->session->data['verify_error'])) {
-		$err = $this->session->data['verify_error'];
-		unset($this->session->data['verify_error']);
-		echo "<p>$err</p>";
-	}
 ?>
 <style type="text/css">
 .verify-form label {
@@ -13,6 +8,21 @@ if ($config) {
 	float: left;
 	margin-top: 0.5em;
 }
+.verify-form fieldset {
+	background-color: #efefef;
+	border: 1px solid #ccc;
+	padding: 1em;
+}
+
+#column-right, #column-left {
+	width: 50%;
+	margin: 75px 3em 3em;
+}
+
+#content .buttons {
+	display: none;
+}
+
 </style>
 <?php
 	$MONTHS = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
@@ -50,10 +60,18 @@ if ($config) {
 	</p>
 	<?php }
 ?>
+<h2>Enter your information to qualify:</h2>
 <form method="POST" action="index.php?route=common/sheer_id" class="verify-form">
+	<?php if (isset($this->session->data['verify_error'])) {
+		$err = $this->session->data['verify_error'];
+		unset($this->session->data['verify_error']);
+	?>
+		<div class="warning"><?php echo $err; ?></div>
+	<?php } ?>
+	<fieldset>
 	<?php if ($org_type) { ?>
 		<p>
-			<label for="organization">Organization:</label>
+			<label for="organization"><?php echo $label_organization; ?>:</label>
 			<input type="text" id="organization" name="organizationId" />
 		</p>
 	<?php } ?>
@@ -61,9 +79,10 @@ if ($config) {
 	<?php foreach ($fields as $f) {
 		renderField($f, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
 	} ?>
+		<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
+		<button type="submit" class="button">Verify</button>
+	</fieldset>
 	
-	<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
-	<button type="submit">Verify</button>
 </form>
 
 <?php if ($org_type) { ?>

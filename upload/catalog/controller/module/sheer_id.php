@@ -11,9 +11,14 @@ class ControllerModuleSheerID extends Controller {
 		}
 		
 		$this->data['config'] = $config;
-		$this->data['org_type'] = $this->model_tool_sheer_id->getOrganizationType($config['affiliation_types']);
+		
+		$org_type = $this->model_tool_sheer_id->getOrganizationType($config['affiliation_types']);
+
+		$this->data['org_type'] = $org_type == 'university' ? $org_type : null;
 		
 		$this->load->language('module/sheer_id');
+		
+		$this->data["label_organization"] = $this->language->get("label_organization_$org_type");
 		
 		$fields = array("EMAIL", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "FULL_NAME", "BIRTH_DATE", "ID_NUMBER", "USERNAME", "POSTAL_CODE", "SSN", "SSN_LAST4", "STATUS_START_DATE");
 		foreach ($fields as $f) {
