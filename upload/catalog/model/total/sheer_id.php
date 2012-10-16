@@ -3,25 +3,21 @@ class ModelTotalSheerID extends Model {
 	public function getTotal(&$total_data, &$total, &$taxes) {
 		
 		$this->load->model('checkout/coupon');
+		$this->load->model('tool/sheer_id');
 		
 		if (isset($this->session->data['coupon'])) {
 			$coupon_info = $this->model_checkout_coupon->getCoupon($this->session->data['coupon']);
+			$offer = $this->model_tool_sheer_id->getOfferByCouponCode($this->session->data['coupon']);
 
-			if ($coupon_info) {
-				$key = sprintf("Coupon(%s)", $coupon_info["code"]);
-				$aff_type = "STUDENT_FULL_TIME";
+			if ($coupon_info && $offer) {
 				$affiliation_types = isset($this->session->data['sheer_id_affiliation_types']) ? $this->session->data['sheer_id_affiliation_types'] : array();
-				$satisfied = false !== array_search($aff_type, $affiliation_types);
+				$satisfied = count(array_intersect($affiliation_types, $offer['affiliation_types']));
 			
 				if (!$satisfied) {
 					unset($this->session->data['coupon']);
 				}
 			}
 		}
-	}
-	
-	public function getAffiliationTypes() {
-		return array("STUDENT_FULL_TIME", "STUDENT_PART_TIME");
 	}
 }
 ?>

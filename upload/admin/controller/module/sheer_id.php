@@ -16,7 +16,7 @@ class ControllerModuleSheerID extends Controller {
 						
 			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
 		}
-				
+		
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
 		$this->data['text_enabled'] = $this->language->get('text_enabled');
@@ -90,11 +90,12 @@ class ControllerModuleSheerID extends Controller {
 		
 		$this->load->model('tool/sheer_id');
 		$entries = $this->model_tool_sheer_id->getOffers();
+		
 		$coupons = array();
 		foreach ($entries as $entry) {
-			$coupon_info = $this->model_sale_coupon->getCoupon($entry['coupon_id']);
+			$coupon_info = $this->model_tool_sheer_id->getCouponInfoByCode($entry['coupon_code']);
 			if ($coupon_info) {
-				$coupons[] = array("id" => $coupon_info['coupon_id'], "title" => $coupon_info['code']);
+				$coupons[] = array("code" => $coupon_info['code'], "title" => $coupon_info["name"]);
 			}
 		}
 		

@@ -30,12 +30,12 @@
           <?php foreach ($modules as $module) { ?>
           <tbody id="module-row<?php echo $module_row; ?>">
             <tr>
-              <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][coupon_id]">
+              <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][coupon_code]">
                   <?php foreach ($coupons as $coupon) { ?>
-                  <?php if ($coupon['id'] == $module['coupon_id']) { ?>
-                  <option value="<?php echo $coupon['id']; ?>" selected="selected"><?php echo $coupon['title']; ?></option>
+                  <?php if ($coupon['code'] == $module['coupon_code']) { ?>
+                  <option value="<?php echo $coupon['code']; ?>" selected="selected"><?php echo $coupon['title']; ?></option>
                   <?php } else { ?>
-                  <option value="<?php echo $coupon['id']; ?>"><?php echo $coupon['title']; ?></option>
+                  <option value="<?php echo $coupon['code']; ?>"><?php echo $coupon['title']; ?></option>
                   <?php } ?>
                   <?php } ?>
                 </select></td>
@@ -102,7 +102,7 @@ var module_row = <?php echo $module_row; ?>;
 function addModule() {	
 	html  = '<tbody id="module-row' + module_row + '">';
 	html += '  <tr>';
-	html += '    <td class="left"><select name="sheer_id_module[' + module_row + '][coupon_id]">';
+	html += '    <td class="left"><select name="sheer_id_module[' + module_row + '][coupon_code]">';
 	<?php foreach ($coupons as $coupon) { ?>
 	html += '      <option value="<?php echo addslashes($coupon['id']); ?>"><?php echo addslashes($coupon['title']); ?></option>';
 	<?php } ?>

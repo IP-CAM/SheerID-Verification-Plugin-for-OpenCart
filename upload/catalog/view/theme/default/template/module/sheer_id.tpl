@@ -5,29 +5,44 @@ if ($config) {
 		unset($this->session->data['verify_error']);
 		echo "<p>$err</p>";
 	}
-	
-	$org_type = 'university';
+?>
+<style type="text/css">
+.verify-form label {
+	width: 200px;
+	display: block;
+	float: left;
+	margin-top: 0.5em;
+}
+</style>
+<?php
 	$MONTHS = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 	
-	$fields = array("FIRST_NAME", "LAST_NAME", "BIRTH_DATE");
-	
-	function renderField($field, $type="text") {
+	function renderField($field, $type="text", $label=null, $value=null) {
 		$MONTHS = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 	?>
 	<p>
-		<label for="<?php echo $field; ?>"><?php echo $field; ?></label>
-		<?php if ($type == "date") { ?>
+		<label for="<?php echo $field; ?>"><?php echo $label ? $label : $field; ?>:</label>
+		<?php if ($type == "date") {
+			$month_val = 0;
+			$day_val = 0;
+			$year_val = 0;
+			if ($value == 'now') {
+				$month_val = date('m');
+				$day_val = date('d');
+				$year_val = date('Y');
+			}
+		?>
 			<select id="<?php echo $field; ?>_month" name="<?php echo $field; ?>_month">
-				<option value="">--</option>
-				<?php for ($i=0; $i<count($MONTHS); $i++) { ?><option value="<?php echo $i+1; ?>"><?php echo $MONTHS[$i]; ?></option><?php } ?>
+				<option value="">Month</option>
+				<?php for ($i=0; $i<count($MONTHS); $i++) { ?><option value="<?php echo $i+1; ?>" <?php if ($i+1 == $month_val) echo "selected"; ?>><?php echo $MONTHS[$i]; ?></option><?php } ?>
 			</select>
 			<select id="<?php echo $field; ?>_day" name="<?php echo $field; ?>_day">
-				<option value="">--</option>
-				<?php for ($i=1; $i<=31; $i++) { ?><option value="<?php echo $i; ?>"><?php echo $i; ?></option><?php } ?>
+				<option value="">Day</option>
+				<?php for ($i=1; $i<=31; $i++) { ?><option value="<?php echo $i; ?>" <?php if ($i == $day_val) echo "selected"; ?>><?php echo $i; ?></option><?php } ?>
 			</select>
 			<select id="<?php echo $field; ?>_year" name="<?php echo $field; ?>_year">
-				<option value="">--</option>
-				<?php for ($i=date("Y")/1; $i >= 1900; $i--) { ?><option value="<?php echo $i; ?>"><?php echo $i; ?></option><?php } ?>
+				<option value="">Year</option>
+				<?php for ($i=date("Y")/1; $i >= 1900; $i--) { ?><option value="<?php echo $i; ?>" <?php if ($i == $year_val) echo "selected"; ?>><?php echo $i; ?></option><?php } ?>
 			</select>
 		<?php } else { ?>
 			<input type="text" id="<?php echo $field; ?>" name="<?php echo $field; ?>" value="" />
@@ -35,7 +50,7 @@ if ($config) {
 	</p>
 	<?php }
 ?>
-<form method="POST" action="index.php?route=common/sheer_id">
+<form method="POST" action="index.php?route=common/sheer_id" class="verify-form">
 	<?php if ($org_type) { ?>
 		<p>
 			<label for="organization">Organization:</label>
@@ -44,10 +59,10 @@ if ($config) {
 	<?php } ?>
 	
 	<?php foreach ($fields as $f) {
-		renderField($f, strpos($f, "_DATE") !== false ? "date" : "text");
+		renderField($f, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
 	} ?>
 	
-	<input type="hidden" name="coupon_id" value="<?php echo $config['coupon_id'] ?>" />
+	<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
 	<button type="submit">Verify</button>
 </form>
 

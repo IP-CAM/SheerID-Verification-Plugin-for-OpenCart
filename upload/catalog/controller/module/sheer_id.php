@@ -3,22 +3,34 @@ class ControllerModuleSheerID extends Controller {
 	protected function index($setting) {
 		
 		$this->load->model('tool/sheer_id');
-		$coupon_id = $setting['coupon_id'];
-		$config = $this->model_tool_sheer_id->getDiscount($coupon_id);
+		$coupon_code = $setting['coupon_code'];
+		$config = $this->model_tool_sheer_id->getOfferByCouponCode($coupon_code);
 		
 		if (!$config) {
 			return;
 		}
 		
 		$this->data['config'] = $config;
+		$this->data['org_type'] = $this->model_tool_sheer_id->getOrganizationType($config['affiliation_types']);
 		
+		$this->load->language('module/sheer_id');
+		
+		$fields = array("EMAIL", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "FULL_NAME", "BIRTH_DATE", "ID_NUMBER", "USERNAME", "POSTAL_CODE", "SSN", "SSN_LAST4", "STATUS_START_DATE");
+		foreach ($fields as $f) {
+			$this->data["field_$f"] = $this->language->get("field_$f");
+		}
+		
+		$this->data["fields"] = $this->model_tool_sheer_id->getFields($config['affiliation_types']);
+		
+		$this->data['heading_title'] = $this->language->get('heading_title');
+
 		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/sheer_id.tpl')) {
 			$this->template = $this->config->get('config_template') . '/template/module/sheer_id.tpl';
 		} else {
 			$this->template = 'default/template/module/sheer_id.tpl';
 		}
 		
-		$this->render();
+		$this->response->setOutput($this->render());
 	}
 }
 ?>

@@ -77,8 +77,8 @@ label.checkbox {
 						<th style="width: 80%">Verification Required?</th>
 					</tr>
 					<?php foreach ($coupons as $coupon) {
-						$coupon_id = $coupon['coupon_id'];
-						$types = isset($affiliation_type_mappings["affiliation_types-$coupon_id"]) ? $affiliation_type_mappings["affiliation_types-$coupon_id"] : array();
+						$coupon_code = $coupon['code'];
+						$types = isset($affiliation_type_mappings["affiliation_types-$coupon_code"]) ? $affiliation_type_mappings["affiliation_types-$coupon_code"] : array();
 					?>
 					<tr>
 						<td><?php printf("%s (Code: %s)", $coupon["name"], $coupon["code"]) ?></td>
@@ -88,7 +88,7 @@ label.checkbox {
 							<?php foreach ($affiliation_types as $affiliation_type) {
 								$checked = false !== array_search($affiliation_type, $types);
 							?>
-								<label class="checkbox"><input type="checkbox" name="affiliation_types-<?php echo $coupon["coupon_id"]; ?>[]" value="<?php echo $affiliation_type ?>" <?php echo $checked ? "checked" : "" ?> /> <?php echo ${"label_$affiliation_type"}; ?></label>
+								<label class="checkbox"><input type="checkbox" name="affiliation_types-<?php echo $coupon["code"]; ?>[]" value="<?php echo $affiliation_type ?>" <?php echo $checked ? "checked" : "" ?> /> <?php echo ${"label_$affiliation_type"}; ?></label>
 							<?php } ?>
 							</div>
 						</td>
