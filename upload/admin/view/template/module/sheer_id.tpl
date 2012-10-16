@@ -19,8 +19,7 @@
           <thead>
             <tr>
               <td class="left"><?php echo $entry_coupon; ?></td>
-              <td class="left"><?php echo $entry_layout; ?></td>
-              <td class="left"><?php echo $entry_position; ?></td>
+              <td class="left"><?php echo $entry_information; ?></td>
               <td class="left"><?php echo $entry_status; ?></td>
               <td class="right"><?php echo $entry_sort_order; ?></td>
               <td></td>
@@ -39,37 +38,14 @@
                   <?php } ?>
                   <?php } ?>
                 </select></td>
-              <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][layout_id]">
-                  <?php foreach ($layouts as $layout) { ?>
-                  <?php if ($layout['layout_id'] == $module['layout_id']) { ?>
-                  <option value="<?php echo $layout['layout_id']; ?>" selected="selected"><?php echo $layout['name']; ?></option>
-                  <?php } else { ?>
-                  <option value="<?php echo $layout['layout_id']; ?>"><?php echo $layout['name']; ?></option>
-                  <?php } ?>
-                  <?php } ?>
-                </select></td>
-              <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][position]">
-                  <?php if ($module['position'] == 'content_top') { ?>
-                  <option value="content_top" selected="selected"><?php echo $text_content_top; ?></option>
-                  <?php } else { ?>
-                  <option value="content_top"><?php echo $text_content_top; ?></option>
-                  <?php } ?>
-                  <?php if ($module['position'] == 'content_bottom') { ?>
-                  <option value="content_bottom" selected="selected"><?php echo $text_content_bottom; ?></option>
-                  <?php } else { ?>
-                  <option value="content_bottom"><?php echo $text_content_bottom; ?></option>
-                  <?php } ?>
-                  <?php if ($module['position'] == 'column_left') { ?>
-                  <option value="column_left" selected="selected"><?php echo $text_column_left; ?></option>
-                  <?php } else { ?>
-                  <option value="column_left"><?php echo $text_column_left; ?></option>
-                  <?php } ?>
-                  <?php if ($module['position'] == 'column_right') { ?>
-                  <option value="column_right" selected="selected"><?php echo $text_column_right; ?></option>
-                  <?php } else { ?>
-                  <option value="column_right"><?php echo $text_column_right; ?></option>
-                  <?php } ?>
-                </select></td>
+			  <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][information_id]">
+					<?php foreach ($information as $info) { ?>
+						<option value="<?php echo $info["information_id"]; ?>" <?php if($module["information_id"] == $info["information_id"]) echo "selected"; ?>><?php echo $info["title"]; ?></option>
+					<?php } ?>
+				</select>
+				<input type="hidden" name="sheer_id_module[<?php echo $module_row; ?>][position]" value="column_right" />
+			  	<input type="hidden" name="sheer_id_module[<?php echo $module_row; ?>][layout_id]" value="11" />
+				</td>
               <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][status]">
                   <?php if ($module['status']) { ?>
                   <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
@@ -107,17 +83,14 @@ function addModule() {
 	html += '      <option value="<?php echo addslashes($coupon['id']); ?>"><?php echo addslashes($coupon['title']); ?></option>';
 	<?php } ?>
 	html += '    </select></td>';
-	html += '    <td class="left"><select name="sheer_id_module[' + module_row + '][layout_id]">';
-	<?php foreach ($layouts as $layout) { ?>
-	html += '      <option value="<?php echo $layout['layout_id']; ?>"><?php echo addslashes($layout['name']); ?></option>';
+	html += '    <td class="left"><select name="sheer_id_module[' + module_row + '][information_id]">';
+	<?php foreach ($information as $i) { ?>
+	html += '      <option value="<?php echo $i['information_id']; ?>"><?php echo addslashes($i['title']); ?></option>';
 	<?php } ?>
-	html += '    </select></td>';
-	html += '    <td class="left"><select name="sheer_id_module[' + module_row + '][position]">';
-	html += '      <option value="content_top"><?php echo $text_content_top; ?></option>';
-	html += '      <option value="content_bottom"><?php echo $text_content_bottom; ?></option>';
-	html += '      <option value="column_left"><?php echo $text_column_left; ?></option>';
-	html += '      <option value="column_right"><?php echo $text_column_right; ?></option>';
-	html += '    </select></td>';
+	html += '    </select>';
+	html += '	 <input type="hidden" name="sheer_id_module[' + module_row + '][position]" value="column_right" />';
+  	html += '	 <input type="hidden" name="sheer_id_module[' + module_row + '][layout_id]" value="11" />';
+	html += '	 </td>';
 	html += '    <td class="left"><select name="sheer_id_module[' + module_row + '][status]">';
     html += '      <option value="1" selected="selected"><?php echo $text_enabled; ?></option>';
     html += '      <option value="0"><?php echo $text_disabled; ?></option>';

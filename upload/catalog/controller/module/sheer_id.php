@@ -6,10 +6,10 @@ class ControllerModuleSheerID extends Controller {
 		$coupon_code = $setting['coupon_code'];
 		$config = $this->model_tool_sheer_id->getOfferByCouponCode($coupon_code);
 		
-		if (!$config) {
+		if (!$config || $this->request->get['information_id'] != $config['information_id']) {
 			return;
 		}
-		
+
 		$this->data['config'] = $config;
 		
 		$org_type = $this->model_tool_sheer_id->getOrganizationType($config['affiliation_types']);

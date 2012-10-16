@@ -12,11 +12,11 @@ class ModelToolSheerID extends Model {
 		$offers = array();
 		$this->load->model('setting/setting');
 		$settings = $this->model_setting_setting->getSetting('sheer_id');
-		foreach ($settings as $k => $v) {
-			$matches = array();
-			if (preg_match("/^affiliation_types-(.*)/", $k, $matches)) {
-				$offers[] = array("coupon_code" => $matches[1], "affiliation_types" => $v);
-			}
+		
+		foreach ($settings["offer"] as $k => $v) {
+			$key = preg_replace("/^offer-/", "", $k);
+			$v["coupon_code"] = $key;
+			$offers[] = $v;
 		}
 		return $offers;
 	}
@@ -42,11 +42,11 @@ class ModelToolSheerID extends Model {
 					$s['code'] = $coupon_info['code'];
 				}
 				
-				$settings = $this->model_setting_setting->getSetting('sheer_id');
-				
-				if (isset($settings["affiliation_types-$coupon_code"])) {
-					$s["affiliation_types"] = $settings["affiliation_types-$coupon_code"];
-					return $s;
+				foreach ($this->getOffers() as $o) {
+					if ($o['coupon_code'] == $coupon_code && isset($o["affiliation_types"])) {
+						$s["affiliation_types"] = $o["affiliation_types"];
+						return $s;
+					}
 				}
 			}
 		}

@@ -12,7 +12,7 @@
 <?php 
 class ControllerTotalSheerID extends Controller {
 	private $error = array(); 
-	 
+
 	public function index() {
 		$this->load->language('total/sheer_id');
 
@@ -134,6 +134,7 @@ class ControllerTotalSheerID extends Controller {
 		}
 		
 		$this->data['affiliation_type_mappings'] = $maps;
+		$this->data['offers'] = $settings["offer"];
 		
 		$this->template = 'total/sheer_id.tpl';
 		$this->children = array(

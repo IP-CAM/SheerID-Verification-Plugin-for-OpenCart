@@ -30,6 +30,7 @@ class ControllerModuleSheerID extends Controller {
 		$this->data['entry_dimension'] = $this->language->get('entry_dimension'); 
 		$this->data['entry_layout'] = $this->language->get('entry_layout');
 		$this->data['entry_position'] = $this->language->get('entry_position');
+		$this->data['entry_information'] = $this->language->get('entry_information');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_sort_order'] = $this->language->get('entry_sort_order');
 		
@@ -100,6 +101,14 @@ class ControllerModuleSheerID extends Controller {
 		}
 		
 		$this->data['coupons'] = $coupons;
+		
+		$this->load->model('catalog/information');
+		$this->data['information'] = $this->model_catalog_information->getInformations(array(
+			'sort'  => 'id.title',
+			'order' => 'ASC',
+			'start' => 0,
+			'limit' => 0
+		));
 				
 		$this->template = 'module/sheer_id.tpl';
 		$this->children = array(

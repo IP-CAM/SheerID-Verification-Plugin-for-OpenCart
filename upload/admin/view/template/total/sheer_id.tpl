@@ -21,6 +21,10 @@ label.checkbox {
 }
 .offers-table td {
 	vertical-align: top;
+	padding: 0.3em 0.3em 0;
+}
+.offers-table tr.odd td {
+	background-color: #efefef;
 }
 </style>
 
@@ -86,7 +90,9 @@ label.checkbox {
             <td><select name="sheer_id_base_url">
                 <option value="https://services.sheerid.com" <?php echo $sheer_id_base_url == 'https://services.sheerid.com' ? "selected" : ""; ?>><?php echo $text_mode_production; ?></option>
                 <option value="https://services-sandbox.sheerid.com" <?php echo $sheer_id_base_url == 'https://services-sandbox.sheerid.com' ? "selected" : ""; ?>><?php echo $text_mode_sandbox; ?></option>
-              </select></td>
+              </select>
+			  <small style="margin-left: 1em">Sandbox mode is used for testing purposes.  More information is available by visiting the <a href="http://developer.sheerid.com">SheerID Developer Center</a>.</small>
+			</td>
           </tr>
 		  <tr>
 			<td><?php echo $entry_coupons; ?></td>
@@ -96,20 +102,23 @@ label.checkbox {
 						<th style="width: 20%">Coupon</th>
 						<th style="width: 80%">Verification Required?</th>
 					</tr>
-					<?php foreach ($coupons as $coupon) {
+					<?php
+					$i = 0;
+					foreach ($coupons as $coupon) {
 						$coupon_code = $coupon['code'];
-						$types = isset($affiliation_type_mappings["affiliation_types-$coupon_code"]) ? $affiliation_type_mappings["affiliation_types-$coupon_code"] : array();
+						$offer = $offers["offer-$coupon_code"];
+						$types = isset($offer["affiliation_types"]) ? $offer["affiliation_types"] : array();
 					?>
-					<tr>
+					<tr class=<?php echo $i++ % 2 == 0 ? "even" : "odd"; ?>>
 						<td><?php printf("%s (Code: %s)", $coupon["name"], $coupon["code"]) ?></td>
 						<td>
 							<label style="font-weight: bold;"><input type="checkbox" class="qualified" <?php if (count($types)) echo "checked" ?>> Require verification</label>
 							<div class="checkboxes">
-							<?php foreach ($affiliation_types as $affiliation_type) {
-								$checked = false !== array_search($affiliation_type, $types);
-							?>
-								<label class="checkbox"><input type="checkbox" name="affiliation_types-<?php echo $coupon["code"]; ?>[]" value="<?php echo $affiliation_type ?>" <?php echo $checked ? "checked" : "" ?> /> <?php echo ${"label_$affiliation_type"}; ?></label>
-							<?php } ?>
+								<?php foreach ($affiliation_types as $affiliation_type) {
+									$checked = false !== array_search($affiliation_type, $types);
+								?>
+									<label class="checkbox"><input type="checkbox" name="offer[offer-<?php echo $coupon["code"]; ?>][affiliation_types][]" value="<?php echo $affiliation_type ?>" <?php echo $checked ? "checked" : "" ?> /> <?php echo ${"label_$affiliation_type"}; ?></label>
+								<?php } ?>
 							</div>
 						</td>
 					</tr>

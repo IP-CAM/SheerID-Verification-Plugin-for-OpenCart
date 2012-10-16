@@ -6,6 +6,8 @@ class ControllerCommonSheerID extends Controller {
 			$this->load->model('tool/sheer_id');
 			$offer = $this->model_tool_sheer_id->getOfferByCouponCode($this->request->post['coupon_code']);
 			
+			$this->load->language('common/sheer_id');
+			
 			if ($offer) {
 				$config = array("affiliationTypes" => implode(",", $offer["affiliation_types"]));
 				$orgId = $this->request->post['organizationId'];
@@ -32,7 +34,7 @@ class ControllerCommonSheerID extends Controller {
 					$this->session->data['sheer_id_affiliation_types'] = $aff_types;
 					$this->session->data['sheer_id_request_id'] = $requestId;
 				} catch (Exception $e) {
-					$this->session->data['verify_error'] = $e->getMessage();
+					$this->session->data['verify_error'] = $this->language->get("error");
 					$this->redirect($_SERVER['HTTP_REFERER']);
 					return;
 				}
@@ -40,11 +42,12 @@ class ControllerCommonSheerID extends Controller {
 			
 			if ($offer && $verified) {
 				$this->session->data['coupon'] = $offer['code'];
-				$this->session->data['success'] = 'Success: Your coupon discount has been applied!';
+				$this->session->data['success'] = $this->language->get("success");
 				$this->redirect($this->url->link('checkout/cart'));
 			} else {
-				var_dump($response);
-				$this->session->data['verify_error'] = count($response->errors) ? $response->errors[0]->message : "Something bad happened";
+				
+				
+				$this->session->data['verify_error'] = $this->language->get("error");
 				$this->redirect($_SERVER['HTTP_REFERER']);
 			}
 		}     
