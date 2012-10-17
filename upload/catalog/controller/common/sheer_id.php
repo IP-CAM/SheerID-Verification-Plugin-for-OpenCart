@@ -53,7 +53,7 @@ class ControllerCommonSheerID extends Controller {
 			}
 			
 			if ($offer && $verified) {
-				$this->session->data['coupon'] = $offer['code'];
+				$this->session->data['coupon'] = $offer['coupon_code'];
 				$this->session->data['success'] = $this->language->get("success");
 				$this->redirect($this->url->link('checkout/cart'));
 			} else {
