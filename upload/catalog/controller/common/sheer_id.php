@@ -9,13 +9,25 @@ class ControllerCommonSheerID extends Controller {
 			$this->load->language('common/sheer_id');
 			
 			if ($offer) {
+				$invalid = false;
 				$config = array("affiliationTypes" => implode(",", $offer["affiliation_types"]));
 				$orgId = $this->request->post['organizationId'];
 				$data = array();
 				
 				$fields = $this->model_tool_sheer_id->getFields($offer["affiliation_types"]);
 				foreach ($fields as $f) {
-					$data[$f] = $this->getPostData($f);
+					$val = $this->getPostData($f);
+					if ($val) {
+						$data[$f] = $val;
+					} else {
+						$invalid = true;
+					}
+				}
+				
+				if ($invalid) {
+					$this->session->data['verify_error'] = $this->language->get("error_invalid");
+					$this->redirect($_SERVER['HTTP_REFERER']);
+					return;
 				}
 
 				try {
@@ -45,8 +57,6 @@ class ControllerCommonSheerID extends Controller {
 				$this->session->data['success'] = $this->language->get("success");
 				$this->redirect($this->url->link('checkout/cart'));
 			} else {
-				
-				
 				$this->session->data['verify_error'] = $this->language->get("error");
 				$this->redirect($_SERVER['HTTP_REFERER']);
 			}
