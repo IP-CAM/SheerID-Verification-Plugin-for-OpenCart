@@ -10,7 +10,7 @@ This extension adds the ability to protect targeted discounts and offers via the
 
 1. Back up your OpenCart installation (safety first!).
 2. Upload the contents of `upload/` to the appropriate locations within your OpenCart installation root.
-> Note: this distribution contains a git submodule located under `upload/system/sheerid/library`.  If you are installing this plugin from a zip file or have not initialized the submodule, you will need to make sure to download the [SheerID PHP Library](https://github.com/sheerid/sheerid-php) and unzip it into this directory.
+> Note: this distribution contains a git submodule located under `upload/system/sheerid/library`.  If you are installing this plugin from a GitHub zip file export or have not initialized the submodule, you will need to make sure to download the [SheerID PHP Library](https://github.com/sheerid/sheerid-php) and unzip it into this directory. Users who have downloaded the extension directly from the OpenCart site can ignore this warning.
 3. Navigate to your OpenCart admin backend.
 4. From the "Extensions" menu, select "Order Totals".
 5. Look for the row labeled "SheerID" and click "Install".
