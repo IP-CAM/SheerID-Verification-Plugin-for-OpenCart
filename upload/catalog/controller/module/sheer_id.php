@@ -12,7 +12,7 @@ class ControllerModuleSheerID extends Controller {
 
 		$this->data['config'] = $config;
 		
-		$org_type = $this->model_tool_sheer_id->getOrganizationType($config['affiliation_types']);
+		$org_type = strtolower($this->model_tool_sheer_id->getOrganizationType($config['affiliation_types']));
 
 		$this->data['org_type'] = $org_type == 'university' ? $org_type : null;
 		

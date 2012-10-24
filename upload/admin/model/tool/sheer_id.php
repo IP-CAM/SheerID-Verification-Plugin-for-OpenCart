@@ -61,23 +61,11 @@ class ModelToolSheerID extends Model {
 	}
 
 	public function getFields($affiliation_types) {
-		//TODO: use service
-		$fields = array("FIRST_NAME", "LAST_NAME", "BIRTH_DATE");
-		
-		if (array_search("VETERAN", $affiliation_types) !== false) {
-			$fields[] = "STATUS_START_DATE";
-		}
-		
-		return $fields;
+		return $this->getService()->getFields($affiliation_types);
 	}
 	
 	public function getOrganizationType($affiliation_types) {
-		//TODO: improve
-		if (array_search("ACTIVE_DUTY", $affiliation_types) !== false || array_search("VETERAN", $affiliation_types) !== false) {
-			return "military";
-		} else {
-			return "university";
-		}
+	 	return $this->getService()->getOrganizationType($affiliation_types);
 	}
 
 	public function verify($data, $org, $config) {
