@@ -13,6 +13,10 @@ class ModelToolSheerID extends Model {
 		$this->load->model('setting/setting');
 		$settings = $this->model_setting_setting->getSetting('sheer_id');
 		
+		if (!isset($settings["offer"])) {
+			return array();
+		}
+
 		foreach ($settings["offer"] as $k => $v) {
 			$key = preg_replace("/^offer-/", "", $k);
 			$v["coupon_code"] = $key;

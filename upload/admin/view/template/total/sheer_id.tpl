@@ -106,7 +106,7 @@ label.checkbox {
 					$i = 0;
 					foreach ($coupons as $coupon) {
 						$coupon_code = $coupon['code'];
-						$offer = $offers["offer-$coupon_code"];
+						$offer = isset($offers["offer-$coupon_code"]) ? $offers["offer-$coupon_code"] : array();
 						$types = isset($offer["affiliation_types"]) ? $offer["affiliation_types"] : array();
 					?>
 					<tr class=<?php echo $i++ % 2 == 0 ? "even" : "odd"; ?>>

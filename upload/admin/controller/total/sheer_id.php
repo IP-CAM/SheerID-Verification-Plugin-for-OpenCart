@@ -134,7 +134,7 @@ class ControllerTotalSheerID extends Controller {
 		}
 		
 		$this->data['affiliation_type_mappings'] = $maps;
-		$this->data['offers'] = $settings["offer"];
+		$this->data['offers'] = isset($settings["offer"]) ? $settings["offer"] : array();
 		
 		$this->template = 'total/sheer_id.tpl';
 		$this->children = array(
