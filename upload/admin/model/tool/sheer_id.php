@@ -39,6 +39,10 @@ class ModelToolSheerID extends Model {
 		$this->load->model('setting/setting');
 		
 		$settings = $this->model_setting_setting->getSetting('sheer_id_modules');
+		if (!isset($settings['sheer_id_module'])) {
+			return null;
+		}
+		
 		foreach ($settings['sheer_id_module'] as $s) {
 			if (array_key_exists("coupon_code", $s) && $coupon_code == $s["coupon_code"]) {
 				$coupon_info = $this->getCouponInfoByCode($coupon_code);
