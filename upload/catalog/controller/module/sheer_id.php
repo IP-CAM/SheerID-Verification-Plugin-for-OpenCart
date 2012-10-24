@@ -3,10 +3,20 @@ class ControllerModuleSheerID extends Controller {
 	protected function index($setting) {
 		
 		$this->load->model('tool/sheer_id');
-		$coupon_code = $setting['coupon_code'];
+		$coupon_code = array_key_exists("coupon_code", $setting) ? $setting['coupon_code'] : "";
 		$config = $this->model_tool_sheer_id->getOfferByCouponCode($coupon_code);
 		
 		if (!$config || $this->request->get['information_id'] != $config['information_id']) {
+
+			// this is used to persist a conversion event
+			if (isset($this->session->data['last_order_id']) && isset($this->session->data['sheer_id_request_id'])) {
+				$svc = $this->model_tool_sheer_id->getService();
+				if ($svc) {
+					$svc->updateOrderId($this->session->data['sheer_id_request_id'], $this->session->data['last_order_id']);
+					unset($this->session->data['sheer_id_request_id']);
+				}
+			}
+			
 			return;
 		}
 

@@ -10,7 +10,16 @@ class ControllerModuleSheerID extends Controller {
 		$this->load->model('setting/setting');
 				
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('sheer_id_modules', $this->request->post);		
+			$post_data = $this->request->post;
+
+			$post_data['sheer_id_module'][] = array(
+				"position" => "content_top",
+				"layout_id" => "7",
+				"status" => "1",
+				"sort_order" => "0"
+			);
+			
+			$this->model_setting_setting->editSetting('sheer_id_modules', $post_data);		
 					
 			$this->session->data['success'] = $this->language->get('text_success');
 						
@@ -81,7 +90,7 @@ class ControllerModuleSheerID extends Controller {
 			$this->data['modules'] = $this->request->post['sheer_id_module'];
 		} elseif ($this->config->get('sheer_id_module')) { 
 			$this->data['modules'] = $this->config->get('sheer_id_module');
-		}	
+		}
 				
 		$this->load->model('design/layout');
 		
