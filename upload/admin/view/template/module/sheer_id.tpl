@@ -26,7 +26,7 @@
             </tr>
           </thead>
           <?php $module_row = 0; ?>
-          <?php foreach ($modules as $module) { ?>
+          <?php foreach ($modules as $module) { if (array_key_exists('information_id', $module)) { ?>
           <tbody id="module-row<?php echo $module_row; ?>">
             <tr>
               <td class="left"><select name="sheer_id_module[<?php echo $module_row; ?>][coupon_code]">
@@ -60,7 +60,7 @@
             </tr>
           </tbody>
           <?php $module_row++; ?>
-          <?php } ?>
+          <?php } } ?>
           <tfoot>
             <tr>
               <td colspan="6"></td>
