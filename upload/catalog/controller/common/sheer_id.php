@@ -31,7 +31,20 @@ class ControllerCommonSheerID extends Controller {
 				}
 
 				try {
-					$response = $this->model_tool_sheer_id->verify($data, $orgId, $config);
+					$response = null;
+					$cfgRep = $this->getRequestConfigRepresentation($orgId, $config);
+					$SheerID = $this->model_tool_sheer_id->getService();
+					
+					// try to resubmit if possible -- TODO: revisit business logic for request updates
+					if ($SheerID && isset($this->session->data['sheer_id_request_id']) && isset($this->session->data['sheer_id_request_config']) && $cfgRep == $this->session->data['sheer_id_request_config']) {
+						try {
+							$response = $SheerID->updateVerification($this->session->data['sheer_id_request_id'], $data);
+						} catch (Exception $e) {}
+					}
+					
+					if (!$response) {
+						$response = $this->model_tool_sheer_id->verify($data, $orgId, $config);
+					}
 
 					$verified = $response->result;
 					$requestId = $response->requestId;
@@ -45,6 +58,8 @@ class ControllerCommonSheerID extends Controller {
 
 					$this->session->data['sheer_id_affiliation_types'] = $aff_types;
 					$this->session->data['sheer_id_request_id'] = $requestId;
+					// will only be eligible to resubmit if no result last time
+					$this->session->data['sheer_id_request_config'] = isset($response->result) ? null : $cfgRep;
 				} catch (Exception $e) {
 					$this->session->data['verify_error'] = $this->language->get("error");
 					$this->redirect($_SERVER['HTTP_REFERER']);
@@ -61,6 +76,10 @@ class ControllerCommonSheerID extends Controller {
 				$this->redirect($_SERVER['HTTP_REFERER']);
 			}
 		}     
+	}
+	
+	private function getRequestConfigRepresentation($orgId, $config) {
+		return serialize($config) . $orgId;
 	}
 	
 	private function getPostData($key) {
