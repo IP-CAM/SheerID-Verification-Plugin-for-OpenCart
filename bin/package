@@ -1,0 +1,11 @@
+#!/bin/bash
+
+name=SheerID-OpenCart
+hash=$(git rev-parse HEAD | head -c 6)
+version=$(git tag | tail -n1)
+
+dist=$name-$version-$hash
+
+mkdir -p ./target
+git submodule update --init
+zip -q -x */.git/* -r ./target/$dist.zip upload README.md
