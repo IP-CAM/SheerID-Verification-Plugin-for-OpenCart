@@ -37,9 +37,10 @@ This plugin requires access to the SheerID API in order to function.  After inst
 
 1. In the OpenCart admin backend, from the "Sales" menu select "Coupons".  Click the "Insert" button and configure a coupon code as normal.
 2. From the "Extensions" menu select "Order Totals" and click on the "Edit" link for the SheerID row.
-3. In the "Coupons" section, find the appropriate row for the coupon code you wish to protect, and check the checkbox marked "Require verification". Leaving this checkbox unchecked results in the coupon code being treated as if this plugin were not installed - no verification will be required.
-4. In the bank of checkboxes that appears, select one or more affiliation types that you will allow to redeem this coupon.
-5. Save the SheerID settings - usage of the coupon code is now restricted to the affiliations you chose in a previous step.
+3. Before configuring the coupon, make sure that the Sort Order of the extension is a lower number than the Coupon Order Total extension. Example, if by default Coupon is 4, SheerID should be 3 or lower.  This is necessary to properly calculate order totals.
+4. In the "Coupons" section, find the appropriate row for the coupon code you wish to protect, and check the checkbox marked "Require verification". Leaving this checkbox unchecked results in the coupon code being treated as if this plugin were not installed - no verification will be required.
+5. In the bank of checkboxes that appears, select one or more affiliation types that you will allow to redeem this coupon.
+6. Save the SheerID settings - usage of the coupon code is now restricted to the affiliations you chose in a previous step.
 
 ### Promoting Your Offer
 
