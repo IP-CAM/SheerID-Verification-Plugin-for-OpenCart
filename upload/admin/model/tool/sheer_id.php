@@ -31,7 +31,16 @@ class ModelToolSheerID extends Model {
 			return $this->model_checkout_coupon->getCoupon($coupon_code);
 		} else {
 			$this->load->model('sale/coupon');
-			return $this->model_sale_coupon->getCouponByCode($coupon_code);
+			if (method_exists($this->model_sale_coupon, "getCouponByCode")) {
+				return $this->model_sale_coupon->getCouponByCode($coupon_code);
+			} else {
+				$coupons = $this->model_sale_coupon->getCoupons();
+				foreach ($coupons as $c) {
+					if ($c['code'] == $coupon_code) {
+						return $c;
+					}
+				}
+			}
 		}
 	}
 	
