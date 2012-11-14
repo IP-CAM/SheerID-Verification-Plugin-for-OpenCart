@@ -8,7 +8,8 @@ if (isset($config)) {
 	float: left;
 	margin-top: 0.5em;
 }
-.verify-form fieldset {
+.verify-form fieldset, .uploadForm {
+	display: block;
 	background-color: #efefef;
 	border: 1px solid #ccc;
 	padding: 1em;
@@ -61,31 +62,81 @@ if (isset($config)) {
 	<?php }
 ?>
 <h2>Enter your information to qualify:</h2>
-<form method="POST" action="index.php?route=common/sheer_id" class="verify-form">
+
+<div id="sheerid-form">
+	
 	<?php if (isset($this->session->data['verify_error'])) {
 		$err = $this->session->data['verify_error'];
 		unset($this->session->data['verify_error']);
+		
+		if (isset($this->session->data['sheer_id_token_url'])) {
+			$tokenUrl = $this->session->data['sheer_id_token_url'];
+			unset($this->session->data['sheer_id_token_url']);
+		}
 	?>
-		<div class="warning"><?php echo $err; ?></div>
-	<?php } ?>
-	<fieldset>
-	<?php if ($org_type) { ?>
-		<p>
-			<label for="organization"><?php echo $label_organization; ?>:</label>
-			<input type="text" id="organization" name="organizationId" />
-		</p>
+	<div class="warning">
+		<span><?php echo $err; ?></span>
+		<?php if (isset($tokenUrl)) { ?>
+			<br/><span><a class="link-upload" href="javascript:;"><?php echo $upload_link_text; ?></a>.</span>
+		<?php } ?>
+	</div>
 	<?php } ?>
 	
-	<?php foreach ($fields as $f) {
-		renderField($f, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
-	} ?>
-		<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
-		<button type="submit" class="button">Verify</button>
-	</fieldset>
+	<form method="POST" action="index.php?route=common/sheer_id" class="verify-form">
+		<fieldset>
+		<?php if ($org_type) { ?>
+			<p>
+				<label for="organization"><?php echo $label_organization; ?>:</label>
+				<input type="text" id="organization" name="organizationId" />
+			</p>
+		<?php } ?>
 	
-</form>
+		<?php foreach ($fields as $f) {
+			renderField($f, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
+		} ?>
+			<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
+			<button type="submit" class="button">Verify</button>
+		</fieldset>
+	</form>
+</div>
 
-<?php if ($org_type) { ?>
+<?php if (isset($tokenUrl)) { ?>
+	<script src="https://services.sheerid.com/jsapi/SheerID.js"></script>
+	<script>
+	jQuery(function($){
+		$('.link-upload').click(function(){
+			$.get('<?php echo $tokenUrl; ?>', {}, function(data){
+				SheerID.load('asset', '1.0', {
+					config: {
+						maxFiles: 3,
+						baseUrl: data.baseUrl,
+						container: 'sheerid-form',
+						success : '?success',
+						failure : '?failure',
+						ajax: true,
+						token: data.token,
+						formClass : 'uploadForm',
+						messages : {
+							'instructions' : '<?php echo $upload_instructions; ?>',
+							'add_file' : '<?php echo $add_file; ?>',
+							'error400' : '<?php echo $error400; ?>',
+							'error401' : '<?php echo $error401; ?>',
+							'error500' : '<?php echo $error; ?>',
+							'error' : '<?php echo $error; ?>',
+							'submit' : '<?php echo $upload_submit; ?>',
+							'success' : '<?php echo $upload_success; ?>',
+							'uploading' : '<?php echo $uploading; ?>'
+						}
+					}
+				});
+			}, 'json');
+			return false;
+		});
+	});
+	</script>
+<?php } ?>
+
+<?php if (isset($org_type)) { ?>
 	<script src="https://services.sheerid.com/jsapi/SheerID.js"></script>
 	<script>
 	SheerID.load('combobox', '1.0', {

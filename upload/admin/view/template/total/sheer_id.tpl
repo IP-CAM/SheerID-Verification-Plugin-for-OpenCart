@@ -95,6 +95,15 @@ label.checkbox {
 			</td>
           </tr>
 		  <tr>
+            <td><?php echo $entry_allow_uploads; ?></td>
+            <td><select name="sheer_id_allow_uploads">
+                <option value="true" <?php echo $sheer_id_allow_uploads ? "selected" : ""; ?>>Yes</option>
+                <option value="" <?php echo !$sheer_id_allow_uploads ? "selected" : ""; ?>>No</option>
+              </select>
+			  <small style="margin-left: 1em">If uploads are allowed, your users will be prompted to upload proof of affiliation if automated verification fails.</small>
+			</td>
+          </tr>
+		  <tr>
 			<td><?php echo $entry_coupons; ?></td>
 			<td>
 				<table class="offers-table">

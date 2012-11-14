@@ -62,6 +62,9 @@ class ControllerCommonSheerID extends Controller {
 				$this->redirectToCart($this->language->get("success"), "success");
 				$this->redirect($this->url->link('checkout/cart'));
 			} else {
+				if ($this->model_tool_sheer_id->allowUploads() && $SheerID && $response->requestId) {
+					$this->session->data['sheer_id_token_url'] = $this->url->link('common/sheer_id/token');
+				}
 				$this->session->data['verify_error'] = $this->language->get("error");
 				$this->redirect($_SERVER['HTTP_REFERER']);
 			}
@@ -69,7 +72,9 @@ class ControllerCommonSheerID extends Controller {
 	}
 	
 	public function claim() {
-		if (array_key_exists("requestId", $this->request->get)) {
+		$this->load->model('tool/sheer_id');
+		
+		if ($this->model_tool_sheer_id->allowUploads() && array_key_exists("requestId", $this->request->get)) {
 			$requestId = $this->request->get['requestId'];
 			
 			$this->load->language('common/sheer_id');
@@ -106,6 +111,30 @@ class ControllerCommonSheerID extends Controller {
 		} else {
 			$this->redirectToHomePage();
 			return;
+		}
+	}
+	
+	public function token() {
+		$this->load->model('tool/sheer_id');
+		
+		if (!$this->model_tool_sheer_id->allowUploads()) {
+			return;
+		}
+		
+		$SheerID = $this->model_tool_sheer_id->getService();
+
+		if ($SheerID && isset($this->session->data['sheer_id_request_id'])) {
+			$requestId = $this->session->data['sheer_id_request_id'];
+		
+			if (isset($this->session->data['sheer_id_upload_token'])) {
+				$SheerID->revokeToken($this->session->data['sheer_id_upload_token']);
+			}
+			
+			// TODO: review expiration
+			$token = $SheerID->getAssetToken($requestId);
+			$this->session->data['sheer_id_upload_token'] = $token;
+			$respData = array("token" => $token, "baseUrl" => $SheerID->url());
+			$this->response->setOutput(json_encode($respData));
 		}
 	}
 	

@@ -25,6 +25,7 @@ $_['entry_sort_order']  = 'Sort order:';
 $_['entry_access_token']  = 'Access Token:';
 $_['entry_coupons']  = 'Coupons:';
 $_['entry_mode'] = "API Mode:";
+$_['entry_allow_uploads'] = 'Allow Digital Asset Upload:';
 
 $_['label_STUDENT_FULL_TIME'] = "Full-Time Student";
 $_['label_STUDENT_PART_TIME'] = "Part-Time Student";

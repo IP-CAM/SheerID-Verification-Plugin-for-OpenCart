@@ -98,6 +98,10 @@ class ModelToolSheerID extends Model {
 		}
 	}
 	
+	public function allowUploads() {
+		return !!$this->config->get('sheer_id_allow_uploads');
+	}
+	
 	private function loadSheerIDLibrary() {
 		require_once(DIR_SYSTEM . 'sheerid/library/SheerID.php');
 	}

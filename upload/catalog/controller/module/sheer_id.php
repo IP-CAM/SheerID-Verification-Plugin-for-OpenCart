@@ -32,6 +32,11 @@ class ControllerModuleSheerID extends Controller {
 				$this->data["field_$f"] = $this->language->get("field_$f");
 			}
 
+			$terms = array("add_file", "error400", "error401", "error500", "error", "upload_submit", "upload_success", "uploading", "upload_link_text", "upload_instructions");
+			foreach ($terms as $t) {
+				$this->data[$t] = $this->language->get($t);
+			}
+
 			$this->data["fields"] = $this->model_tool_sheer_id->getFields($config['affiliation_types']);
 
 			$this->data['heading_title'] = $this->language->get('heading_title');

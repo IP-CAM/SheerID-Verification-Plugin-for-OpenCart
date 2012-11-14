@@ -52,6 +52,7 @@ class ControllerTotalSheerID extends Controller {
 		$this->data['entry_access_token'] = $this->language->get('entry_access_token');
 		$this->data['entry_mode'] = $this->language->get('entry_mode');
 		$this->data['entry_coupons'] = $this->language->get('entry_coupons');
+		$this->data['entry_allow_uploads'] = $this->language->get('entry_allow_uploads');
 					
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -108,6 +109,12 @@ class ControllerTotalSheerID extends Controller {
 			$this->data['sheer_id_base_url'] = $this->request->post['sheer_id_base_url'];
 		} else {
 			$this->data['sheer_id_base_url'] = $this->config->get('sheer_id_base_url');
+		}
+
+		if (isset($this->request->post['sheer_id_allow_uploads'])) {
+			$this->data['sheer_id_allow_uploads'] = $this->request->post['sheer_id_allow_uploads'];
+		} else {
+			$this->data['sheer_id_allow_uploads'] = $this->config->get('sheer_id_allow_uploads');
 		}
 		
 		$this->load->model('sale/coupon');
