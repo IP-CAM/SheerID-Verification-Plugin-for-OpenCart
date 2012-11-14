@@ -1,5 +1,5 @@
 <?php
-if ($config) {
+if (isset($config)) {
 ?>
 <style type="text/css">
 .verify-form label {
@@ -102,4 +102,10 @@ if ($config) {
 	
 <?php } // end if $org_type
 
-} // end if $config
+} else if (isset($this->session->data["sheerid_message"])) {
+	$message = $this->session->data["sheerid_message"]["message"];
+	$type = $this->session->data["sheerid_message"]["type"];
+	unset($this->session->data["sheerid_message"]);
+?>
+	<div class="<?php echo $type; ?>"><?php echo $message; ?><img src="catalog/view/theme/default/image/close.png" alt="" class="close" /></div>
+<?php }

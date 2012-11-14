@@ -90,6 +90,14 @@ class ModelToolSheerID extends Model {
 		return $SheerID->verify($data, $org, $config);
 	}
 	
+	public function getSiteBaseUrl($controller) {
+		if (isset($controller->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($controller->request->server['HTTPS'] == '1'))) {
+			return $controller->config->get('config_ssl');
+		} else {
+			return $controller->config->get('config_url');
+		}
+	}
+	
 	private function loadSheerIDLibrary() {
 		require_once(DIR_SYSTEM . 'sheerid/library/SheerID.php');
 	}

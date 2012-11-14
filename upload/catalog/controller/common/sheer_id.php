@@ -29,6 +29,8 @@ class ControllerCommonSheerID extends Controller {
 					$this->redirect($_SERVER['HTTP_REFERER']);
 					return;
 				}
+				
+				$data[":coupon_code"] = $this->request->post['coupon_code'];
 
 				try {
 					$response = null;
@@ -45,21 +47,9 @@ class ControllerCommonSheerID extends Controller {
 					if (!$response) {
 						$response = $this->model_tool_sheer_id->verify($data, $orgId, $config);
 					}
-
+					
 					$verified = $response->result;
-					$requestId = $response->requestId;
-					$aff_types = array();
-				
-					if ($verified) {
-						foreach ($response->affiliations as $aff) {
-							$aff_types[] = $aff->type;
-						}
-					}
-
-					$this->session->data['sheer_id_affiliation_types'] = $aff_types;
-					$this->session->data['sheer_id_request_id'] = $requestId;
-					// will only be eligible to resubmit if no result last time
-					$this->session->data['sheer_id_request_config'] = isset($response->result) ? null : $cfgRep;
+					$this->applyResponseToSession($response, $cfgRep);
 				} catch (Exception $e) {
 					$this->session->data['verify_error'] = $this->language->get("error");
 					$this->redirect($_SERVER['HTTP_REFERER']);
@@ -68,14 +58,94 @@ class ControllerCommonSheerID extends Controller {
 			}
 			
 			if ($offer && $verified) {
-				$this->session->data['coupon'] = $offer['coupon_code'];
-				$this->session->data['success'] = $this->language->get("success");
+				$this->applyCoupon($offer['coupon_code']);
+				$this->redirectToCart($this->language->get("success"), "success");
 				$this->redirect($this->url->link('checkout/cart'));
 			} else {
 				$this->session->data['verify_error'] = $this->language->get("error");
 				$this->redirect($_SERVER['HTTP_REFERER']);
 			}
 		}     
+	}
+	
+	public function claim() {
+		if (array_key_exists("requestId", $this->request->get)) {
+			$requestId = $this->request->get['requestId'];
+			
+			$this->load->language('common/sheer_id');
+			
+			$this->load->model('tool/sheer_id');
+			$SheerID = $this->model_tool_sheer_id->getService();
+			
+			if (!$SheerID) {
+				$this->redirectToHomePage();
+				return;
+			}
+			
+			$resp = null;
+			try {
+				$resp = $SheerID->inquire($requestId);
+			} catch (Exception $e) {
+				return $this->redirectToCart($this->language->get("error_invalid_link"), "warning");
+			}
+			
+			if ($resp->status == 'PENDING') {
+				return $this->redirectToCart($this->language->get("notice_pending"), "attention");
+			} else if ('COMPLETE' == $resp->status && !$resp->result) {
+				return $this->redirectToCart($this->language->get("error_failure"), "warning");
+			} else {
+				$md = $resp->request->metadata;
+				if (property_exists($md, "coupon_code") && !property_exists($md, "orderId")) {
+					$this->applyResponseToSession($resp);
+					$this->applyCoupon($md->coupon_code);
+					return $this->redirectToCart($this->language->get("success"), "success");
+				} else {
+					return $this->redirectToCart($this->language->get("error_invalid_link"), "warning");
+				}
+			}
+		} else {
+			$this->redirectToHomePage();
+			return;
+		}
+	}
+	
+	private function redirectToCart($message = null, $message_type = "attention") {
+		if ($message) {
+			$this->session->data["sheerid_message"] = array("message" => $message, "type" => $message_type);
+		}
+		return $this->redirect($this->url->link('checkout/cart'));
+	}
+	
+	private function applyCoupon($coupon_code) {
+		$this->session->data['coupon'] = $coupon_code;
+	}
+	
+	private function applyResponseToSession($response, $cfgRep = null) {
+		$verified = $response->result;
+		$requestId = $response->requestId;
+		$aff_types = array();
+	
+		if ($verified) {
+			foreach ($response->affiliations as $aff) {
+				$aff_types[] = $aff->type;
+			}
+		}
+
+		$this->session->data['sheer_id_affiliation_types'] = $aff_types;
+		$this->session->data['sheer_id_request_id'] = $requestId;
+		
+		// will only be eligible to resubmit if no result last time
+		if ($cfgRep != null) {
+			$this->session->data['sheer_id_request_config'] = isset($response->result) ? null : $cfgRep;
+		}
+		
+		return $verified;
+	}
+	
+	private function redirectToHomePage() {
+		$this->load->model('tool/sheer_id');
+		$baseUrl = $this->model_tool_sheer_id->getSiteBaseUrl($this);
+		$this->redirect($baseUrl);
 	}
 	
 	private function getRequestConfigRepresentation($orgId, $config) {
