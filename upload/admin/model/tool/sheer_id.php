@@ -82,8 +82,13 @@ class ModelToolSheerID extends Model {
 
 	public function getFields($affiliation_types) {
 		$svc_fields = $this->getService()->getFields($affiliation_types);
-		$my_fields = array("EMAIL");
-		return array_unique(array_merge($svc_fields, $my_fields));
+		
+		if ($this->model_tool_sheer_id->allowEmail()) {
+			$my_fields = array("EMAIL");
+			return array_unique(array_merge($svc_fields, $my_fields));
+		} else {
+			return $svc_fields;
+		}
 	}
 	
 	public function getOrganizationType($affiliation_types) {
