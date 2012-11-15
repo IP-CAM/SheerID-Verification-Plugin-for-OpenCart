@@ -103,6 +103,40 @@ label.checkbox {
 			  <small style="margin-left: 1em">If uploads are allowed, your users will be prompted to upload proof of affiliation if automated verification fails.</small>
 			</td>
           </tr>
+		  <tr id="send-email-wrap">
+            <td><?php echo $entry_send_email; ?></td>
+            <td><select name="sheer_id_send_email">
+                <option value="true" <?php echo $sheer_id_send_email ? "selected" : ""; ?>>Yes</option>
+                <option value="" <?php echo !$sheer_id_send_email ? "selected" : ""; ?>>No</option>
+              </select>
+			  <small style="margin-left: 1em">Allow SheerID to send email on your behalf to customers who have uploaded documents, notifying them of the verification result and instructing them to proceed. <em>Highly Recommended</em>.</small>
+			</td>
+          </tr>
+		  <tr id="email-config-wrap">
+            <td>Email Settings:</td>
+            <td>
+				<?php
+				function cb ($matches) {
+					return $matches[1] . " " . $matches[2];
+				}
+				foreach ($email_settings as $setting => $value) {
+					$title = ucwords(preg_replace_callback("/(^|[a-z])([A-Z])/", "cb", $setting));
+				?>
+				<p>
+					<label style="width: 14em; float: left; display: block;"><?php echo $title; ?>:</label>
+					<?php if ($setting == 'failureEmail' || $setting == 'successEmail') { ?>
+						<textarea name="sheer_id_email_config[<?php echo $setting; ?>]" style="width:40%" rows="5"><?php echo $value; ?></textarea>
+					<?php } else { ?>	
+						<input type="text" style="width:40%" name="sheer_id_email_config[<?php echo $setting; ?>]" value="<?php echo $value; ?>" />
+					<?php } ?>
+				</p>
+				<?php } ?>
+				<p>The following variables may be specified in email content, and will be rendered to the appropriate values when the email is sent:</p>
+				<ul>
+					<li><code>%successUrl%</code> &mdash; The URL the user should visit to complete the redemption of the offer.  <strong>Must be included in the success email content.</strong></li>
+				</ul>
+			</td>
+		  </tr>
 		  <tr>
 			<td><?php echo $entry_coupons; ?></td>
 			<td>
@@ -150,6 +184,18 @@ jQuery(function($){
 		if (!on) {
 			cboxWrap.find(':checkbox').removeAttr('checked');
 		}
+	}).change();
+	$('select[name=sheer_id_allow_uploads]').change(function(){
+		var on = !!$(this).val();
+		$('#send-email-wrap').toggle(on);
+		$('#email-config-wrap').toggle(on);
+		if (!on) {
+			$('select[name=sheer_id_send_email]').val('').change();
+		}
+	}).change();
+	$('select[name=sheer_id_send_email]').change(function(){
+		var on = !!$(this).val();
+		$('#email-config-wrap').toggle(on);
 	}).change();
 });
 </script>

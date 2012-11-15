@@ -17,19 +17,51 @@ class ControllerTotalSheerID extends Controller {
 		$this->load->language('total/sheer_id');
 
 		$this->document->setTitle($this->language->get('heading_title'));
-				
+		
 		$this->load->model('setting/setting');
+		$this->load->model('tool/sheer_id');
+		
+		$baseUrl = $this->model_tool_sheer_id->getSiteBaseUrl($this);
+		echo $baseUrl;
+		
+		if ($this->model_tool_sheer_id->allowEmail()) {
+			$emailNotifier = $this->model_tool_sheer_id->getEmailNotifier();
+		}
 		
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && ($this->validate())) {
+			
+			// don't store email settings locally
+			$email_settings = $this->request->post['sheer_id_email_config'];
+			unset($this->request->post['sheer_id_email_config']);
+			
 			$this->model_setting_setting->editSetting('sheer_id', $this->request->post);
 		
+			if ($this->model_tool_sheer_id->allowEmail()) {
+				if ($emailNotifier) {
+					$this->model_tool_sheer_id->updateEmailNotifier($emailNotifier->id, $email_settings);
+				} else {
+					$this->model_tool_sheer_id->addEmailNotifier($email_settings);
+				}
+			}
+		
 			$this->session->data['success'] = $this->language->get('text_success');
-			
 			$this->redirect($this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 		
-		$this->load->model('tool/sheer_id');
 		$affiliationTypes = $this->model_tool_sheer_id->getAffiliationTypes();
+		
+		$email_settings = $this->model_tool_sheer_id->getEmailDefaults();
+		
+		if ($emailNotifier) {
+			$my_settings = new ArrayObject($emailNotifier->config);
+			foreach ($email_settings as $k => $v) {
+				if (isset($my_settings[$k])) {
+					$email_settings[$k] = $my_settings[$k];
+				}
+			}
+		}
+		
+		$this->data["email_settings"] = $email_settings;
 		
 		foreach ($affiliationTypes as $a) {
 			try {
@@ -53,6 +85,7 @@ class ControllerTotalSheerID extends Controller {
 		$this->data['entry_mode'] = $this->language->get('entry_mode');
 		$this->data['entry_coupons'] = $this->language->get('entry_coupons');
 		$this->data['entry_allow_uploads'] = $this->language->get('entry_allow_uploads');
+		$this->data['entry_send_email'] = $this->language->get('entry_send_email');
 					
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -115,6 +148,12 @@ class ControllerTotalSheerID extends Controller {
 			$this->data['sheer_id_allow_uploads'] = $this->request->post['sheer_id_allow_uploads'];
 		} else {
 			$this->data['sheer_id_allow_uploads'] = $this->config->get('sheer_id_allow_uploads');
+		}
+		
+		if (isset($this->request->post['sheer_id_send_email'])) {
+			$this->data['sheer_id_send_email'] = $this->request->post['sheer_id_send_email'];
+		} else {
+			$this->data['sheer_id_send_email'] = $this->config->get('sheer_id_send_email');
 		}
 		
 		$this->load->model('sale/coupon');

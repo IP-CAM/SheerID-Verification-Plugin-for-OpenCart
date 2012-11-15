@@ -1,5 +1,8 @@
 <?php
 class ModelToolSheerID extends Model {
+	
+	var $NOTIFIER_TAG = "opencart";
+	
 	public function getAffiliationTypes() {
 		try {
 			return $this->getService()->listAffiliationTypes();
@@ -78,7 +81,9 @@ class ModelToolSheerID extends Model {
 	}
 
 	public function getFields($affiliation_types) {
-		return $this->getService()->getFields($affiliation_types);
+		$svc_fields = $this->getService()->getFields($affiliation_types);
+		$my_fields = array("EMAIL");
+		return array_unique(array_merge($svc_fields, $my_fields));
 	}
 	
 	public function getOrganizationType($affiliation_types) {
@@ -98,8 +103,60 @@ class ModelToolSheerID extends Model {
 		}
 	}
 	
+	public function getClaimOfferUrl($controller, $requestId) {
+		$baseUrl = $this->getSiteBaseUrl($controller);
+		$url_helper = new Url($baseUrl);
+		return $url_helper->link('common/sheer_id/claim') . '&requestId=' . $requestId;
+	}
+	
+	public function getEmailNotifier() {
+		$SheerID = $this->getService();
+		if ($SheerID) {
+			$notifiers = $SheerID->getJson('/notifier', array("tag" => $this->NOTIFIER_TAG));
+			if (count($notifiers)) {
+				return $notifiers[0];
+			}
+		}
+	}
+
+	public function updateEmailNotifier($notifierId, $config) {
+		$SheerID = $this->getService();
+		if ($SheerID) {
+			$config["tag"] = $this->NOTIFIER_TAG;
+			$resp = $SheerID->post("/notifier/$notifierId", $config);
+			return json_decode($resp["responseText"]);
+		}
+	}
+	
+	public function addEmailNotifier($config) {
+		$SheerID = $this->getService();
+		if ($SheerID) {
+			$config["tag"] = $this->NOTIFIER_TAG;
+			$config["type"] = "EMAIL";
+			$resp = $SheerID->post('/notifier', $config);
+			return json_decode($resp["responseText"]);
+		}
+	}
+	
+	public function getEmailDefaults() {
+		$this->load->language('total/sheer_id');
+		return array(
+			"emailFromAddress" => $this->language->get('emailFromAddress'),
+			"emailFromName" => $this->config->get('config_name'),
+			"successEmailSubject" => $this->language->get('successEmailSubject'),
+			"successEmail" => $this->language->get('successEmail'),
+			"failureEmailSubject" => $this->language->get('failureEmailSubject'),
+			"failureEmail" => $this->language->get('failureEmail')
+		);
+		
+	}
+		
 	public function allowUploads() {
 		return !!$this->config->get('sheer_id_allow_uploads');
+	}
+	
+	public function allowEmail() {
+		return $this->allowUploads() && $this->config->get('sheer_id_send_email');
 	}
 	
 	private function loadSheerIDLibrary() {

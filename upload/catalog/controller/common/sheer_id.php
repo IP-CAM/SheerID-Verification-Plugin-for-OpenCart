@@ -134,6 +134,10 @@ class ControllerCommonSheerID extends Controller {
 			$token = $SheerID->getAssetToken($requestId);
 			$this->session->data['sheer_id_upload_token'] = $token;
 			$respData = array("token" => $token, "baseUrl" => $SheerID->url());
+			
+			$claimUrl = $this->model_tool_sheer_id->getClaimOfferUrl($this, $requestId);
+			$SheerID->updateMetadata($requestId, array("successUrl" => $claimUrl));
+			
 			$this->response->setOutput(json_encode($respData));
 		}
 	}
