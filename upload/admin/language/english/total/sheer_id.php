@@ -36,7 +36,7 @@ $_['error_permission']  = 'Warning: You do not have permission to modify SheerID
 // email defaults
 $_["emailFromAddress"] = "verify@sheerid.com";
 $_["successEmailSubject"] = "Verification Succeeded";
-$_["successEmail"] = "You were successfully verified to receive your offer.  Please visit the URL below to redeem your discount:<br/><br/>%successUrl%";
+$_["successEmail"] = "You were successfully verified to receive your offer.  Please visit the following URL to redeem your discount: %successUrl%";
 $_["failureEmailSubject"] = "Verification Failed";
 $_["failureEmail"] = "We were unable to verify you in order to redeem the offer.  Please try your request again.";
 ?>

@@ -21,13 +21,6 @@ class ControllerTotalSheerID extends Controller {
 		$this->load->model('setting/setting');
 		$this->load->model('tool/sheer_id');
 		
-		$baseUrl = $this->model_tool_sheer_id->getSiteBaseUrl($this);
-		echo $baseUrl;
-		
-		if ($this->model_tool_sheer_id->allowEmail()) {
-			$emailNotifier = $this->model_tool_sheer_id->getEmailNotifier();
-		}
-		
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && ($this->validate())) {
 			
 			// don't store email settings locally
@@ -35,6 +28,11 @@ class ControllerTotalSheerID extends Controller {
 			unset($this->request->post['sheer_id_email_config']);
 			
 			$this->model_setting_setting->editSetting('sheer_id', $this->request->post);
+			
+			// update any cached settings, in case they have changed
+			foreach ($this->request->post as $k => $v) {
+				$this->config->set($k, $v);
+			}
 		
 			if ($this->model_tool_sheer_id->allowEmail()) {
 				if ($emailNotifier) {
@@ -42,10 +40,16 @@ class ControllerTotalSheerID extends Controller {
 				} else {
 					$this->model_tool_sheer_id->addEmailNotifier($email_settings);
 				}
+			} else {
+				$this->model_tool_sheer_id->removeEmailNotifier();
 			}
 		
 			$this->session->data['success'] = $this->language->get('text_success');
 			$this->redirect($this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL'));
+		}
+		
+		if ($this->model_tool_sheer_id->allowEmail()) {
+			$emailNotifier = $this->model_tool_sheer_id->getEmailNotifier();
 		}
 		
 		$affiliationTypes = $this->model_tool_sheer_id->getAffiliationTypes();

@@ -143,6 +143,17 @@ class ModelToolSheerID extends Model {
 		}
 	}
 	
+	public function removeEmailNotifier() {
+		$notifier = $this->getEmailNotifier();
+		if ($notifier) {
+			$notifierId = $notifier->id;
+			$SheerID = $this->getService();
+			if ($SheerID) {
+				$SheerID->delete("/notifier/$notifierId");
+			}
+		}
+	}
+	
 	public function getEmailDefaults() {
 		$this->load->language('total/sheer_id');
 		return array(
