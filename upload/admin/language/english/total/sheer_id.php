@@ -14,6 +14,7 @@ $_['entry_sort_order']  = 'Sort order:';
 $_['entry_access_token']  = 'Access Token:';
 $_['entry_coupons']  = 'Coupons:';
 $_['entry_mode'] = "API Mode:";
+$_['entry_custom_fields'] = 'Custom Fields:';
 $_['entry_allow_uploads'] = 'Allow Digital Asset Upload:';
 $_['entry_send_email'] = 'Send Email:';
 

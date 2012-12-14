@@ -94,6 +94,12 @@ label.checkbox {
 			  <small style="margin-left: 1em">Sandbox mode is used for testing purposes.  More information is available by visiting the <a href="http://developer.sheerid.com">SheerID Developer Center</a>.</small>
 			</td>
           </tr>
+	      <tr>
+            <td><?php echo $entry_custom_fields; ?></td>
+            <td><input name="sheer_id_fields" type="text" value="<?php echo $sheer_id_fields; ?>" size="50" />
+			  <small style="margin-left: 1em">Add any additional fields that you would like to capture in addition to defaults (separate with comma). Fields starting with * are required.</small>
+			</td>
+          </tr>
 		  <tr>
             <td><?php echo $entry_allow_uploads; ?></td>
             <td><select name="sheer_id_allow_uploads">

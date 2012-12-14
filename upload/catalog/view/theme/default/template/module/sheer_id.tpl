@@ -65,6 +65,10 @@ if (isset($config)) {
 		<?php } ?>
 	</p>
 	<?php }
+	
+	function deriveLabel($f) {
+		return ucwords(strtolower(str_replace('_', '', $f)));
+	}
 ?>
 <h2>Enter your information to qualify:</h2>
 
@@ -103,7 +107,7 @@ if (isset($config)) {
 				$reqd = true;
 				$f = substr($f, 1);
 			}
-			renderField($f, $reqd, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
+			renderField($f, $reqd, strpos($f, "_DATE") !== false ? "date" : "text", isset(${"field_$f"}) ? ${"field_$f"} : deriveLabel($f), $f=="STATUS_START_DATE"?"now":null);
 		} ?>
 			<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
 			<button type="submit" class="button">Verify</button>

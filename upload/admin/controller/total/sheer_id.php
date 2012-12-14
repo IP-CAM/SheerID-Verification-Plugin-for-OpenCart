@@ -87,6 +87,7 @@ class ControllerTotalSheerID extends Controller {
 		$this->data['entry_sort_order'] = $this->language->get('entry_sort_order');
 		$this->data['entry_access_token'] = $this->language->get('entry_access_token');
 		$this->data['entry_mode'] = $this->language->get('entry_mode');
+		$this->data['entry_custom_fields'] = $this->language->get('entry_custom_fields');
 		$this->data['entry_coupons'] = $this->language->get('entry_coupons');
 		$this->data['entry_allow_uploads'] = $this->language->get('entry_allow_uploads');
 		$this->data['entry_send_email'] = $this->language->get('entry_send_email');
@@ -124,42 +125,16 @@ class ControllerTotalSheerID extends Controller {
 		
 		$this->data['cancel'] = $this->url->link('extension/total', 'token=' . $this->session->data['token'], 'SSL');
 
-		if (isset($this->request->post['sheer_id_status'])) {
-			$this->data['sheer_id_status'] = $this->request->post['sheer_id_status'];
-		} else {
-			$this->data['sheer_id_status'] = $this->config->get('sheer_id_status');
+		$keys = array('sheer_id_status', 'sheer_id_sort_order', 'sheer_id_access_token', 'sheer_id_base_url', 'sheer_id_allow_uploads', 'sheer_id_send_email', 'sheer_id_fields');
+
+		foreach ($keys as $k) {
+			if (isset($this->request->post[$k])) {
+				$this->data[$k] = $this->request->post[$k];
+			} else {
+				$this->data[$k] = $this->config->get($k);
+			}
 		}
 
-		if (isset($this->request->post['sheer_id_sort_order'])) {
-			$this->data['sheer_id_sort_order'] = $this->request->post['sheer_id_sort_order'];
-		} else {
-			$this->data['sheer_id_sort_order'] = $this->config->get('sheer_id_sort_order');
-		}
-		
-		if (isset($this->request->post['sheer_id_access_token'])) {
-			$this->data['sheer_id_access_token'] = $this->request->post['sheer_id_access_token'];
-		} else {
-			$this->data['sheer_id_access_token'] = $this->config->get('sheer_id_access_token');
-		}
-
-		if (isset($this->request->post['sheer_id_base_url'])) {
-			$this->data['sheer_id_base_url'] = $this->request->post['sheer_id_base_url'];
-		} else {
-			$this->data['sheer_id_base_url'] = $this->config->get('sheer_id_base_url');
-		}
-
-		if (isset($this->request->post['sheer_id_allow_uploads'])) {
-			$this->data['sheer_id_allow_uploads'] = $this->request->post['sheer_id_allow_uploads'];
-		} else {
-			$this->data['sheer_id_allow_uploads'] = $this->config->get('sheer_id_allow_uploads');
-		}
-		
-		if (isset($this->request->post['sheer_id_send_email'])) {
-			$this->data['sheer_id_send_email'] = $this->request->post['sheer_id_send_email'];
-		} else {
-			$this->data['sheer_id_send_email'] = $this->config->get('sheer_id_send_email');
-		}
-		
 		$this->load->model('sale/coupon');
 		
 		$query = array(
