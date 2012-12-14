@@ -77,6 +77,7 @@ if (isset($config)) {
 	<div class="warning">
 		<span><?php echo $err; ?></span>
 		<?php if (isset($tokenUrl)) { ?>
+			<span><?php if (isset($this->session->data['upload_suggestion'])) { echo $this->session->data['upload_suggestion']; } ?></span>
 			<br/><span><a class="link-upload" href="javascript:;"><?php echo $upload_link_text; ?></a>.</span>
 		<?php } ?>
 	</div>

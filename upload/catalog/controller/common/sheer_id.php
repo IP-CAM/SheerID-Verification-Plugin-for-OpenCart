@@ -7,6 +7,7 @@ class ControllerCommonSheerID extends Controller {
 			$offer = $this->model_tool_sheer_id->getOfferByCouponCode($this->request->post['coupon_code']);
 			
 			$this->load->language('common/sheer_id');
+			$this->session->data['upload_suggestion'] = $this->language->get('upload_suggestion');
 			
 			if ($offer) {
 				$invalid = false;
