@@ -28,11 +28,16 @@ if (isset($config)) {
 <?php
 	$MONTHS = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 	
-	function renderField($field, $type="text", $label=null, $value=null) {
+	function renderField($field, $required, $type="text", $label=null, $value=null) {
 		$MONTHS = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
 	?>
 	<p>
-		<label for="<?php echo $field; ?>"><?php echo $label ? $label : $field; ?>:</label>
+		<label for="<?php echo $field; ?>">
+			<?php if ($required) { ?>
+				<em class="required">* </em>
+			<?php } ?>
+			<span><?php echo $label ? $label : $field; ?>:</span>
+		</label>
 		<?php if ($type == "date") {
 			$month_val = 0;
 			$day_val = 0;
@@ -93,7 +98,12 @@ if (isset($config)) {
 		<?php } ?>
 	
 		<?php foreach ($fields as $f) {
-			renderField($f, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
+			$reqd = false;
+			if ($f[0] == '*') {
+				$reqd = true;
+				$f = substr($f, 1);
+			}
+			renderField($f, $reqd, strpos($f, "_DATE") !== false ? "date" : "text", ${"field_$f"}, $f=="STATUS_START_DATE"?"now":null);
 		} ?>
 			<input type="hidden" name="coupon_code" value="<?php echo $config['coupon_code'] ?>" />
 			<button type="submit" class="button">Verify</button>

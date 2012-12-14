@@ -17,10 +17,15 @@ class ControllerCommonSheerID extends Controller {
 				
 				$fields = $this->model_tool_sheer_id->getFields($offer["affiliation_types"]);
 				foreach ($fields as $f) {
+					$reqd = false;
+					if ($f[0] == '*') {
+						$reqd = true;
+						$f = substr($f, 1);
+					}
 					$val = $this->getPostData($f);
 					if ($val) {
 						$data[$f] = $val;
-					} else {
+					} else if ($reqd) {
 						$invalid = true;
 					}
 				}
