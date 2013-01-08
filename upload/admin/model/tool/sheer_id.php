@@ -85,7 +85,9 @@ class ModelToolSheerID extends Model {
 		
 		$custom = $this->config->get('sheer_id_fields');
 		foreach (preg_split("/\s*,\s*/", $custom) as $f) {
-			$my_fields[] = "$f";
+			if ($f) {
+				$my_fields[] = "$f";
+			}
 		}
 		
 		foreach ($this->getService()->getFields($affiliation_types) as $field) {
